@@ -54,7 +54,7 @@
   </el-input>-->
     </el-table-column></el-table>
     <el-button @click="getDataList()">查询</el-button>
-    <el-button v-if="isAuth('generator:advice:save')" type="primary" @click="addOrUpdateHandle()">提交</el-button>
+    <el-button v-if="isAuth('sys:advice:save')" type="primary" @click="addOrUpdateHandle()">提交</el-button>
       <el-alert
     title="提示："
     type="warning"
@@ -117,7 +117,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/generator/advice/list'),
+          url: this.$http.adornUrl('/sys/advice/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -172,7 +172,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/generator/advice/delete'),
+            url: this.$http.adornUrl('/sys/advice/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

@@ -11,7 +11,7 @@
         <el-input v-model="dataForm.amount" placeholder="数额"></el-input>
       </el-form-item>
       <el-form-item label="支款时间" prop="remark">
-        <el-input v-model="dataForm.time" placeholder="支款时间"></el-input>
+        <el-date-picker v-model="dataForm.time" type="datetime" placeholder="支款时间"></el-date-picker>
       </el-form-item>
       <el-form-item label="薪资" prop="remark">
         <el-input v-model="dataForm.salary" placeholder="薪资"></el-input>
@@ -55,7 +55,7 @@
       init (id) {
         this.dataForm.id = id || 0
         this.$http({
-          url: this.$http.adornUrl('/generator/moneywithdraw/list'),
+          url: this.$http.adornUrl('/sys/moneywithdraw/list'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
@@ -69,7 +69,7 @@
         }).then(() => {
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/generator/moneywithdraw/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/sys/moneywithdraw/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
@@ -91,7 +91,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/generator/moneywithdraw/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/sys/moneywithdraw/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,

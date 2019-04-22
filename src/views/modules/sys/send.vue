@@ -1,12 +1,14 @@
 <template>
-  <div class="mod-moneywithdraw">
+  <div class="mod-send">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button @click="getDataList()">刷新</el-button>
-        <el-button v-if="isAuth('sys:moneywithdraw:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:moneywithdraw:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-input v-model="dataForm.userName" placeholder="用户名" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
       </el-form-item>
     </el-form>
+
     <el-table
       :data="dataList"
       border
@@ -20,37 +22,32 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
+        prop="username"
         header-align="center"
         align="center"
-        width="80"
-        label="ID">
+        label="账号">
       </el-table-column>
       <el-table-column
-        prop="nickname"
+        prop="email"
         header-align="center"
         align="center"
-        label="外号">
+        label="邮箱">
       </el-table-column>
       <el-table-column
-        prop="amount"
+        prop="mobile"
         header-align="center"
         align="center"
-        label="数目">
+        label="手机号">
       </el-table-column>
       <el-table-column
-        prop="time"
+        prop="status"
         header-align="center"
         align="center"
-        width="180"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
-        prop="salary"
-        header-align="center"
-        align="center"
-        width="180"
-        label="工资">
+        label="状态">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === 0" size="small" type="danger">禁用</el-tag>
+          <el-tag v-else size="small">正常</el-tag>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -59,9 +56,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-        <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.roleId)">修改</el-button>
-        <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.roleId)">删除</el-button>
-      </template>
+          <el-button  type="text" size="small" @click="addOrUpdateHandle(scope.row.user_id)" >发送邮件</el-button>
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination
@@ -74,17 +70,21 @@
       layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList" userId="userId"></add-or-update>
+    <!--<div slot-scope="scope">
+
+    </div>-->
   </div>
 </template>
 
 <script>
-  import AddOrUpdate from './moneywithdraw-add-or-update'
+  import AddOrUpdate from './send-add-or-update'
+
   export default {
     data () {
       return {
         dataForm: {
-          nickname: ''
+          userName: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -106,11 +106,12 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/moneywithdraw/list'),
+          url: this.$http.adornUrl('/sys/user/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
-            'limit': this.pageSize
+            'limit': this.pageSize,
+            'username': this.dataForm.userName
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -139,26 +140,29 @@
         this.dataListSelections = val
       },
       // 新增 / 修改
-      addOrUpdateHandle (id) {
+      addOrUpdateHandle (userId) {
+        var userIds = userId ? [userId] : this.dataListSelections.map(item => {
+          return item.userId
+        })
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.addOrUpdate.init(userIds)
         })
       },
       // 删除
       deleteHandle (id) {
-        var ids = id ? [id] : this.dataListSe.lections.map(item => {
-          return item.id
+        var userIds = id ? [id] : this.dataListSelections.map(item => {
+          return item.userId
         })
-        this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/sys/moneywithdraw/delete'),
+            url: this.$http.adornUrl('/sys/user/delete'),
             method: 'post',
-            data: this.$http.adornData(ids, false)
+            data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
             if (data && data.code === 0) {
               this.$message({
@@ -178,7 +182,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>

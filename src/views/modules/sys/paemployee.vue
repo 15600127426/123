@@ -1,10 +1,13 @@
 <template>
-  <div class="mod-moneywithdraw">
+  <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button @click="getDataList()">刷新</el-button>
-        <el-button v-if="isAuth('sys:moneywithdraw:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:moneywithdraw:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+        <el-button v-if="isAuth('sys:paemployee:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('sys:paemployee:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,8 +26,13 @@
         prop="id"
         header-align="center"
         align="center"
-        width="80"
-        label="ID">
+        label="用户id">
+      </el-table-column>
+      <el-table-column
+        prop="userName"
+        header-align="center"
+        align="center"
+        label="名字">
       </el-table-column>
       <el-table-column
         prop="nickname"
@@ -33,24 +41,22 @@
         label="外号">
       </el-table-column>
       <el-table-column
-        prop="amount"
+        prop="joinTime"
         header-align="center"
         align="center"
-        label="数目">
+        label="入职时间">
       </el-table-column>
       <el-table-column
-        prop="time"
+        prop="province"
         header-align="center"
         align="center"
-        width="180"
-        label="创建时间">
+        label="来自">
       </el-table-column>
       <el-table-column
-        prop="salary"
+        prop="needPaid"
         header-align="center"
         align="center"
-        width="180"
-        label="工资">
+        label="赔付">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -59,9 +65,9 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-        <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.roleId)">修改</el-button>
-        <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.row.roleId)">删除</el-button>
-      </template>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination
@@ -79,12 +85,12 @@
 </template>
 
 <script>
-  import AddOrUpdate from './moneywithdraw-add-or-update'
+  import AddOrUpdate from './paemployee-add-or-update'
   export default {
     data () {
       return {
         dataForm: {
-          nickname: ''
+          key: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -106,11 +112,12 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/moneywithdraw/list'),
+          url: this.$http.adornUrl('/sys/paemployee/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
-            'limit': this.pageSize
+            'limit': this.pageSize,
+            'key': this.dataForm.key
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -147,7 +154,7 @@
       },
       // 删除
       deleteHandle (id) {
-        var ids = id ? [id] : this.dataListSe.lections.map(item => {
+        var ids = id ? [id] : this.dataListSelections.map(item => {
           return item.id
         })
         this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
@@ -156,7 +163,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/sys/moneywithdraw/delete'),
+            url: this.$http.adornUrl('/sys/paemployee/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {
@@ -173,12 +180,8 @@
               this.$message.error(data.msg)
             }
           })
-        }).catch(() => {})
+        })
       }
     }
   }
 </script>
-
-<style scoped>
-
-</style>

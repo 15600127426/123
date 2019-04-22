@@ -59,7 +59,7 @@
       init: function (id) {
         this.dataForm.id = id || 0
         this.$http({
-          url: this.$http.adornUrl('/generator/advice/list'),
+          url: this.$http.adornUrl('/sys/advice/list'),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
@@ -73,7 +73,7 @@
         }).then(() => {
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/generator/advice/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/sys/advice/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
@@ -94,7 +94,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/generator/advice/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/sys/advice/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,

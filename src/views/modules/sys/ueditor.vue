@@ -7,14 +7,20 @@
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
       style="width: 100%;">
-      <!--<el-table-column
+      <el-table-column
+        type="selection"
+        header-align="center"
+        align="center"
+        width="50">
+      </el-table-column>
+      <el-table-column
       prop="id"
       header-align="center"
       align="center"
       width="80"
       label="ID">
     </el-table-column>
-    <el-table-column
+    <!--<el-table-column
       prop="user_id"
       header-align="center"
       align="center"
@@ -31,16 +37,18 @@
       prop="title"
       header-align="center"
       align="center"
+      width="300"
       label="标题">
     </el-table-column>
       <el-table-column
         prop="detail"
         header-align="center"
         align="center"
-        label="细节">
+        width="800"
+        label="内容">
       </el-table-column>
       <el-table-column
-      prop="createTime"
+      prop="creatTime"
       header-align="center"
       align="center"
       width="180"
@@ -52,9 +60,20 @@
     placeholder="这里是内容"
     v-model="textarea">
   </el-input>-->
+      </el-table-column>
+        <el-table-column
+          fixed="right"
+          header-align="center"
+          align="center"
+          width="150"
+          label="操作">
+        <template slot-scope="scope">
+          <el-button v-if="isAuth('sys:role:update')" type="text" size="small" @click="addOrUpdateHandle(scope.roleId)">修改</el-button>
+          <el-button v-if="isAuth('sys:role:delete')" type="text" size="small" @click="deleteHandle(scope.roleId)">删除</el-button>
+        </template>
     </el-table-column></el-table>
     <el-button @click="getDataList()">刷新</el-button>
-    <el-button v-if="isAuth('generator:advice:save')" type="primary" @click="addOrUpdateHandle()">提交</el-button>
+    <el-button v-if="isAuth('sys:advice:save')" type="primary" @click="addOrUpdateHandle()">提交</el-button>
       <el-alert
     title="提示："
     type="warning"
@@ -74,12 +93,14 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <!--<li v-for="id in getDataList()">
+      {{ id }}
+    </li>-->
   </div>
 
 </template>
 
    <script>
-  import ueditor from 'ueditor'
   import AddOrUpdate from './ueditor-add-or-update'
   export default {
     data: function () {
@@ -89,7 +110,7 @@
           detail: '',
           user_id: '',
           avatar: '',
-          createTime: ''
+          creat_time: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -117,7 +138,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/generator/advice/list'),
+          url: this.$http.adornUrl('/sys/advice/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -172,7 +193,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/generator/advice/delete'),
+            url: this.$http.adornUrl('/sys/advice/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

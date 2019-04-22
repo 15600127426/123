@@ -389,6 +389,32 @@ var dataList = [
     'orderNum': 7,
     'open': null,
     'list': null
+  },
+  {
+    'menuId': 32,
+    'parentId': 1,
+    'parentName': null,
+    'name': '信息管理',
+    'url': 'sys/paemployee',
+    'perms': 'sys:paemployee:all',
+    'type': 1,
+    'icon': 'log',
+    'orderNum': 7,
+    'open': null,
+    'list': null
+  },
+  {
+    'menuId': 33,
+    'parentId': 1,
+    'parentName': null,
+    'name': '信息管理',
+    'url': 'sys/user',
+    'perms': 'sys:user:all',
+    'type': 1,
+    'icon': 'log',
+    'orderNum': 7,
+    'open': null,
+    'list': null
   }
 ]
 var navDataList = [
@@ -533,6 +559,71 @@ var navDataList = [
         'orderNum': 7,
         'open': null,
         'list': null
+      },
+      {
+        'menuId': 33,
+        'parentId': 1,
+        'parentName': null,
+        'name': '信息管理',
+        'url': 'sys/paemployee',
+        'perms': 'sys:paemployee:all',
+        'type': 1,
+        'icon': 'log',
+        'orderNum': 7,
+        'open': null,
+        'list': null
+      },
+      {
+        'menuId': 34,
+        'parentId': 1,
+        'parentName': null,
+        'name': '签证明细',
+        'url': 'sys/checkstatus',
+        'perms': 'sys:checkstatus:all',
+        'type': 1,
+        'icon': 'log',
+        'orderNum': 7,
+        'open': null,
+        'list': null
+      },
+      {
+        'menuId': 35,
+        'parentId': 1,
+        'parentName': null,
+        'name': '员工信息管理',
+        'url': 'sys/forfeitdetail',
+        'perms': 'sys:forfeitdetail:all',
+        'type': 1,
+        'icon': 'log',
+        'orderNum': 7,
+        'open': null,
+        'list': null
+      },
+      {
+        'menuId': 36,
+        'parentId': 1,
+        'parentName': null,
+        'name': '资金明细',
+        'url': 'sys/moneywithdraw',
+        'perms': 'sys:moneywithdraw:all',
+        'type': 1,
+        'icon': 'log',
+        'orderNum': 7,
+        'open': null,
+        'list': null
+      },
+      {
+        'menuId': 37,
+        'parentId': 1,
+        'parentName': null,
+        'name': '下发任务',
+        'url': 'sys/send',
+        'perms': 'sys:send:send',
+        'type': 1,
+        'icon': 'log',
+        'orderNum': 7,
+        'open': null,
+        'list': null
       }
     ]
   }
@@ -583,6 +674,10 @@ export function nav () {
         'sys:log:list',
         'sys:oss:all',
         'sys:moneywithdraw:all',
+        'sys:paemployee:all',
+        'sys:checkstatus:all',
+        'sys:forfeitdetail:all',
+        'sys:send:send',
         'sys:ueditor:all'
       ]
     }
